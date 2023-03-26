@@ -1,13 +1,14 @@
-const {Engine,Render,Runner,World,Bodies} = Matter; // pull out objects from Matter library
+const {Engine,Render,Runner,World,Bodies,Body} = Matter; // pull out objects from Matter library
 
-const cells = 3;
+const cells = 15;
 const width = 600 ;
 const height = 600 ;
 
 // one of the length of cell
-const unitLength = width / 3 ;
+const unitLength = width / cells;
 
 const engine =Engine.create(); // when we create engine world object come along with that
+engine.world.gravity.y=0;
 const  { world } = engine;
 const render = Render.create({
     // we are telling to render where we want to show our representation of everything
@@ -28,10 +29,10 @@ const walls = [
     // first argument: left corner to middle of the page
     // second  argument : how many units down from the top left corner
     // third arg : width  // fourth arg : height
-    Bodies.rectangle(width/2,0,width,40, { isStatic : true}),
-    Bodies.rectangle(width/2,height,width,40 ,{isStatic:true}),
-    Bodies.rectangle(0,height/2,40,height, {isStatic:true}),
-    Bodies.rectangle(width,height/2,40,height, {isStatic:true})
+    Bodies.rectangle(width/2,0,width,2, { isStatic : true}),
+    Bodies.rectangle(width/2,height,width,2 ,{isStatic:true}),
+    Bodies.rectangle(0,height/2,2,height, {isStatic:true}),
+    Bodies.rectangle(width,height/2,2,height, {isStatic:true})
 ]
 World.add(world,walls);
 
@@ -147,7 +148,7 @@ horizontals.forEach((row, rowIndex) => {
         columnIndex * unitLength + unitLength / 2,
         rowIndex * unitLength + unitLength,
         unitLength,
-        2,
+        5,
         {
           isStatic: true
         }
@@ -165,7 +166,7 @@ horizontals.forEach((row, rowIndex) => {
       const wall = Bodies.rectangle(
         columnIndex * unitLength + unitLength,
         rowIndex * unitLength + unitLength / 2,
-        2,
+        5,
         unitLength,
         {
           isStatic: true
@@ -192,7 +193,32 @@ const ball = Bodies.circle(
     unitLength/2,
     unitLength/2,
     unitLength * .25,
+    {
+        isStatic : false
+    }
 );
 World.add(world,ball)
+console.log(ball)
+
+document.addEventListener('keydown', event => {
+    const {x,y} = ball.velocity;
+
+    if (event.keyCode === 87) {
+        Body.setVelocity(ball, {x,y:y-5})
+    }
+  
+    if (event.keyCode === 68) {
+        Body.setVelocity(ball, {x:x+5,y})
+    }
+  
+    if (event.keyCode === 83) {
+        Body.setVelocity(ball, {x,y:y+5})
+    }
+  
+    if (event.keyCode === 65) {
+        Body.setVelocity(ball, {x:x-5,y})
+    }
+  });
+  
 
 console.log(grid);
