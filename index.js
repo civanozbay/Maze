@@ -1,11 +1,13 @@
 const {Engine,Render,Runner,World,Bodies,Body,Events} = Matter; // pull out objects from Matter library
 
-const cells = 3;
-const width = 600 ;
-const height = 600 ;
+const cellsHorizontal = 4;
+const cellsVertical = 3;
+const width = window.innerWidth ;
+const height = window.innerHeight ;
 
 // one of the length of cell
-const unitLength = width / cells;
+const unitLengthX = width / cellsHorizontal;
+const unitLengthY = height / cellsVertical;
 
 const engine =Engine.create(); // when we create engine world object come along with that
 engine.world.gravity.y=0;
@@ -68,23 +70,23 @@ const shuffle = arr => {
 
 // Array() = creating array with defined number of element. And with map function for each element we defined an array
 // that fill with false statement like the above code 
-const grid = Array(cells)
+const grid = Array(cellsVertical)
     .fill(null)
     .map(() => {
-      return Array(cells).fill(false);
+      return Array(cellsHorizontal).fill(false);
     });
 
 
-const verticals = Array(cells)
+const verticals = Array(cellsVertical)
     .fill(null)
-    .map(() => Array(cells-1).fill(false))
+    .map(() => Array(cellsHorizontal-1).fill(false))
 
-const horizontals = Array(cells-1)
+const horizontals = Array(cellsVertical-1)
     .fill(null)
-    .map(()=> Array(cells).fill(false));
+    .map(()=> Array(cellsHorizontal).fill(false));
 
-const startRow = Math.floor(Math.random() * cells);
-const startColumn = Math.floor(Math.random() * cells);
+const startRow = Math.floor(Math.random() * cellsVertical);
+const startColumn = Math.floor(Math.random() * cellsHorizontal);
 const stepThroughCell = (row, column) => {
     // If i have visted the cell at [row, column], then return
     if (grid[row][column]) {
@@ -108,9 +110,9 @@ const stepThroughCell = (row, column) => {
       // See if that neighbor is out of bounds
       if (
         nextRow < 0 ||
-        nextRow >= cells ||
+        nextRow >= cellsVertical ||
         nextColumn < 0 ||
-        nextColumn >= cells
+        nextColumn >= cellsHorizontal
       ) {
         continue;
       }
@@ -145,9 +147,9 @@ horizontals.forEach((row, rowIndex) => {
       }
   
       const wall = Bodies.rectangle(
-        columnIndex * unitLength + unitLength / 2,
-        rowIndex * unitLength + unitLength,
-        unitLength,
+        columnIndex * unitLengthX + unitLengthX / 2,
+        rowIndex * unitLengthY + unitLengthY,
+        unitLengthX,
         5,
         { label:'wall',
           isStatic: true
@@ -164,10 +166,10 @@ horizontals.forEach((row, rowIndex) => {
       }
   
       const wall = Bodies.rectangle(
-        columnIndex * unitLength + unitLength,
-        rowIndex * unitLength + unitLength / 2,
+        columnIndex * unitLengthX + unitLengthX,
+        rowIndex * unitLengthY + unitLengthY / 2,
         5,
-        unitLength,
+        unitLengthY,
         { label:'wall',
           isStatic: true
         }
@@ -178,10 +180,10 @@ horizontals.forEach((row, rowIndex) => {
 
 // Goal
 const goal = Bodies.rectangle(
-    width - unitLength / 2,
-    height - unitLength /2,
-    unitLength * .7,
-    unitLength * .7,
+    width - unitLengthX / 2,
+    height - unitLengthY /2,
+    unitLengthX * .7,
+    unitLengthY * .7,
     {   label:'goal',
         isStatic : true
     }
@@ -190,9 +192,9 @@ World.add(world,goal)
 
 // Ball
 const ball = Bodies.circle(
-    unitLength/2,
-    unitLength/2,
-    unitLength * .25,
+    unitLengthX/2,
+    unitLengthY/2,
+    Math.min(unitLengthX,unitLengthY) * .25,
     {
         label : 'ball'
     }
